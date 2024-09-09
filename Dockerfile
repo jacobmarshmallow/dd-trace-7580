@@ -39,3 +39,15 @@ ENTRYPOINT [ \
   "-Xlog:class+load=info", \
   "-jar", "service.jar" \
 ]
+
+FROM runtime AS without-cds
+ENTRYPOINT [ \
+  "java", \
+  "--add-opens", "java.base/java.lang=ALL-UNNAMED", \
+  "-Xshare:on", \
+  "-Xlog:class+load:file=log/class-load.log", \
+  "-Xlog:class+path=debug:file=log/class-path.log", \
+  "-Xlog:class+path=debug", \
+  "-Xlog:class+load=info", \
+  "-jar", "service.jar" \
+]

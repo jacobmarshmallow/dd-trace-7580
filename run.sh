@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-docker run -d --name repro_container repro:$1
+docker run -d --name repro_container dd-trace-7580:$1
 
 LOG_LINE="Started CdsDatadogReproApplication in"
 while true; do
@@ -20,11 +20,11 @@ while true; do
     sleep 2
 done
 
-# Get the total number of classes loaded (denominator)
+# Get the total number of classes loaded
 total_classes=$(docker exec repro_container bash -c "cat log/class-load.log | wc -l")
-# Get the number of 'source: shared' occurrences (numerator)
+# Get the number of 'source: shared' occurrences
 shared_classes=$(docker exec repro_container bash -c "grep -o 'source: shared' -c log/class-load.log")
-# Calculate the percentage (assuming bash supports floating point operations with bc)
+
 if [ "$total_classes" -gt 0 ]; then
     percentage=$(echo "scale=2; ($shared_classes / $total_classes) * 100" | bc)
 else
